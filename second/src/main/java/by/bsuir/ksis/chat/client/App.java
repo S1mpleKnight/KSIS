@@ -28,6 +28,8 @@ public class App extends Application {
     }
 
     public void stop() {
-        connection.disconnect();
+        if (connection != null) {
+            connection.disconnect();
+        }
     }
 }

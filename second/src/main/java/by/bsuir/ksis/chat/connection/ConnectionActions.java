@@ -1,4 +1,4 @@
-package by.bsuir.ksis.chat.client.ksis.connection;
+package by.bsuir.ksis.chat.connection;
 
 public interface ConnectionActions {
     void connectionReady(Connection connection);

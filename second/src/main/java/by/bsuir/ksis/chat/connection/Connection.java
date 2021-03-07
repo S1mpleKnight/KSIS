@@ -1,4 +1,4 @@
-package by.bsuir.ksis.chat.client.ksis.connection;
+package by.bsuir.ksis.chat.connection;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

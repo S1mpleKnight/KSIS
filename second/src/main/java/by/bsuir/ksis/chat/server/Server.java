@@ -1,7 +1,7 @@
-package by.bsuir.ksis.chat.client.ksis.chat.server;
+package by.bsuir.ksis.chat.server;
 
-import by.bsuir.ksis.chat.client.ksis.connection.Connection;
-import by.bsuir.ksis.chat.client.ksis.connection.ConnectionActions;
+import by.bsuir.ksis.chat.connection.Connection;
+import by.bsuir.ksis.chat.connection.ConnectionActions;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -9,10 +9,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class Server  implements ConnectionActions {
-    private final List<Connection> connections = new ArrayList<>();
+public class Server implements ConnectionActions {
     private static final Scanner in = new Scanner(System.in);
     private static boolean isStarted = false;
+    private final List<Connection> connections = new ArrayList<>();
+
+    private Server(int port) {
+        System.out.println("Server running");
+        try (ServerSocket serverSocket = new ServerSocket(port)) {
+            while (true) {
+                try {
+                    isStarted = true;
+                    new Connection(serverSocket.accept(), this);
+                } catch (IOException e) {
+                    System.out.println("Connection exception(server): " + e);
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public static void main(String[] args) {
         while (!isStarted) {
@@ -21,25 +37,9 @@ public class Server  implements ConnectionActions {
         }
     }
 
-    private static int takePortNumber(){
+    private static int takePortNumber() {
         System.out.print("Enter server's port number: ");
         return in.nextInt();
-    }
-
-    private Server(int port){
-        try (ServerSocket serverSocket = new ServerSocket(port)){
-            while (true){
-                try {
-                    System.out.println("Server running");
-                    isStarted = true;
-                    new Connection(serverSocket.accept(), this);
-                } catch (IOException e){
-                    System.out.println("Connection exception: " + e);
-                }
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     @Override
@@ -61,13 +61,14 @@ public class Server  implements ConnectionActions {
 
     @Override
     public void exception(Connection connection, Exception e) {
-        System.out.println("Connection exception: " + e);
+        System.out.println("Connection exception(server): " + e);
     }
 
-    private void sendAll(String message){
+    private void sendAll(String message) {
         System.out.println(message);
-        for (Connection connection : connections) {
-            connection.sendString(message);
+        final int count = connections.size();
+        for (int i = 0; i < count; i++) {
+            connections.get(i).sendString(message);
         }
     }
 }
