@@ -6,13 +6,12 @@ import by.bsuir.ksis.chat.connection.ConnectionActions;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class Server implements ConnectionActions {
     private static final Scanner in = new Scanner(System.in);
     private static boolean isStarted = false;
-    private final List<Connection> connections = new ArrayList<>();
+    private final ArrayList<Connection> connections = new ArrayList<>();
 
     private Server(int port) {
         System.out.println("Server running");
@@ -56,6 +55,7 @@ public class Server implements ConnectionActions {
     @Override
     public void disconnect(Connection connection) {
         connections.remove(connection);
+        connections.trimToSize();
         sendAll("Client disconnected: " + connection);
     }
 
@@ -66,8 +66,8 @@ public class Server implements ConnectionActions {
 
     private void sendAll(String message) {
         System.out.println(message);
-        final int count = connections.size();
-        for (int i = 0; i < count; i++) {
+        connections.trimToSize();
+        for (int i = 0; i < connections.size(); i++) {
             connections.get(i).sendString(message);
         }
     }

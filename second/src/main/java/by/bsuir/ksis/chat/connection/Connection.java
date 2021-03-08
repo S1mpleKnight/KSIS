@@ -30,7 +30,8 @@ public class Connection {
                 try {
                     action.connectionReady(Connection.this);
                     while (!thread.isInterrupted()){
-                        action.stringReceived(Connection.this, in.readLine());                    }
+                        action.stringReceived(Connection.this, in.readLine());
+                    }
                 } catch (IOException e) {
                     action.exception(Connection.this, e);
                 } finally {
