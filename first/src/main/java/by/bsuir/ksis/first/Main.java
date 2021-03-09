@@ -9,7 +9,7 @@ import static by.bsuir.ksis.first.MACSearcher.start;
 public class Main {
 
     public static void main(String[] args) {
-//        showPCMACs();
+        showPCMACs();
 
         System.out.println();
         try {

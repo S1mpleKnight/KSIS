@@ -98,15 +98,15 @@ public class MACSearcher {
     private static void showingValidConnections(int address, int amount) {
         int timeout = 500;
         System.out.println();
-        for (int i = 2; i <= amount; i++) {
+        for (int i = 1; i <= amount; i++) {
             long outerAddress = address + i;
             String anotherApi = createIP(outerAddress);
             InetAddress inetAddress;
             try {
                 inetAddress = InetAddress.getByName(anotherApi);
                 try {
-                    System.out.println("IP address: " + inetAddress.getHostAddress());
                     boolean state = inetAddress.isReachable(timeout);
+                    System.out.println("IP address: " + inetAddress.getHostAddress());
                     System.out.println("Is reachable: " + state);
                     System.out.println(checkARPTable(inetAddress.getHostAddress()));
                 } catch (IOException e) {
