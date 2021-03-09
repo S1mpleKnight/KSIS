@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 public class Connection {
     private final Socket socket;
@@ -59,6 +60,23 @@ public class Connection {
         } catch (IOException e) {
             action.exception(Connection.this, e);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Connection that = (Connection) o;
+        return Objects.equals(socket, that.socket)
+                && Objects.equals(thread, that.thread)
+                && Objects.equals(in, that.in)
+                && Objects.equals(out, that.out)
+                && Objects.equals(action, that.action);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(socket, thread, in, out, action);
     }
 
     @Override
