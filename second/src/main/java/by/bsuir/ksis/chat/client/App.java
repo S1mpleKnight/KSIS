@@ -1,6 +1,6 @@
 package by.bsuir.ksis.chat.client;
 
-import by.bsuir.ksis.chat.connection.Connection;
+import by.bsuir.ksis.chat.connection.SimpleConnection;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -8,13 +8,13 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class App extends Application {
-    private static Connection connection;
+    private static SimpleConnection connection;
 
     public static void main(String[] args) {
         launch();
     }
 
-    public static void setConnection(Connection connection) {
+    public static void setConnection(SimpleConnection connection) {
         App.connection = connection;
     }
 

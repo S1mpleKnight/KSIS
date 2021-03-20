@@ -1,17 +1,18 @@
 package by.bsuir.ksis.chat.server;
 
-import by.bsuir.ksis.chat.connection.Connection;
-import by.bsuir.ksis.chat.connection.ConnectionActions;
+
+import by.bsuir.ksis.chat.connection.SimpleConnection;
+import by.bsuir.ksis.chat.connection.SimpleConnectionActions;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Server implements ConnectionActions {
+public class Server implements SimpleConnectionActions {
     private static final Scanner in = new Scanner(System.in);
     private static boolean isStarted = false;
-    private final ArrayList<Connection> connections = new ArrayList<>();
+    private final ArrayList<SimpleConnection> SimpleConnections = new ArrayList<>();
 
     private Server(int port) {
         System.out.println("Server running");
@@ -19,9 +20,9 @@ public class Server implements ConnectionActions {
             while (true) {
                 try {
                     isStarted = true;
-                    new Connection(serverSocket.accept(), this);
+                    new SimpleConnection(serverSocket.accept(), this);
                 } catch (IOException e) {
-                    System.out.println("Connection exception(server): " + e);
+                    System.out.println("SimpleConnection exception(server): " + e);
                 }
             }
         } catch (IOException e) {
@@ -42,33 +43,33 @@ public class Server implements ConnectionActions {
     }
 
     @Override
-    public void connectionReady(Connection connection) {
-        connections.add(connection);
-        sendAll("Client connected: " + connection);
+    public void connectionReady(SimpleConnection SimpleConnection) {
+        SimpleConnections.add(SimpleConnection);
+        sendAll("Client connected: " + SimpleConnection);
     }
 
     @Override
-    public void stringReceived(Connection connection, String message) {
+    public void stringReceived(SimpleConnection SimpleConnection, String message) {
         sendAll(message);
     }
 
     @Override
-    public void disconnect(Connection connection) {
-        connections.remove(connection);
-        connections.trimToSize();
-        sendAll("Client disconnected: " + connection);
+    public void disconnect(SimpleConnection SimpleConnection) {
+        SimpleConnections.remove(SimpleConnection);
+        SimpleConnections.trimToSize();
+        sendAll("Client disconnected: " + SimpleConnection);
     }
 
     @Override
-    public void exception(Connection connection, Exception e) {
-        System.out.println("Connection exception(server): " + e);
+    public void exception(SimpleConnection SimpleConnection, Exception e) {
+        System.out.println("SimpleConnection exception(server): " + e);
     }
 
     private void sendAll(String message) {
         System.out.println(message);
-        connections.trimToSize();
-        for (int i = 0; i < connections.size(); i++) {
-            connections.get(i).sendString(message);
+        SimpleConnections.trimToSize();
+        for (int i = 0; i < SimpleConnections.size(); i++) {
+            SimpleConnections.get(i).sendString(message);
         }
     }
 }

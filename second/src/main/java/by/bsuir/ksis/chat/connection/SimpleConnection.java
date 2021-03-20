@@ -9,18 +9,18 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
-public class Connection {
+public class SimpleConnection {
     private final Socket socket;
     private final Thread thread;
     private final BufferedReader in;
     private final BufferedWriter out;
-    private final ConnectionActions action;
+    private final SimpleConnectionActions action;
 
-    public Connection(ConnectionActions action, String IP, int port) throws IOException {
+    public SimpleConnection(SimpleConnectionActions action, String IP, int port) throws IOException {
         this(new Socket(IP, port), action);
     }
 
-    public Connection(Socket socket, ConnectionActions action) throws IOException {
+    public SimpleConnection(Socket socket, SimpleConnectionActions action) throws IOException {
         this.action = action;
         this.socket = socket;
         in = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
@@ -29,14 +29,14 @@ public class Connection {
             @Override
             public void run() {
                 try {
-                    action.connectionReady(Connection.this);
+                    action.connectionReady(SimpleConnection.this);
                     while (!thread.isInterrupted()){
-                        action.stringReceived(Connection.this, in.readLine());
+                        action.stringReceived(SimpleConnection.this, in.readLine());
                     }
                 } catch (IOException e) {
-                    action.exception(Connection.this, e);
+                    action.exception(SimpleConnection.this, e);
                 } finally {
-                    action.disconnect(Connection.this);
+                    action.disconnect(SimpleConnection.this);
                 }
             }
         });
@@ -48,7 +48,7 @@ public class Connection {
             out.write(message + "\r\n");
             out.flush();
         } catch (IOException e) {
-            action.disconnect(Connection.this);
+            action.disconnect(SimpleConnection.this);
             disconnect();
         }
     }
@@ -58,7 +58,7 @@ public class Connection {
         try {
             socket.close();
         } catch (IOException e) {
-            action.exception(Connection.this, e);
+            action.exception(SimpleConnection.this, e);
         }
     }
 
@@ -66,7 +66,7 @@ public class Connection {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Connection that = (Connection) o;
+        SimpleConnection that = (SimpleConnection) o;
         return Objects.equals(socket, that.socket)
                 && Objects.equals(thread, that.thread)
                 && Objects.equals(in, that.in)
