@@ -7,6 +7,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.Tooltip;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import org.springframework.http.HttpEntity;
@@ -14,6 +16,8 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 
 public class PrimaryController {
     private static final String URL_SERVER = "http://localhost:8080/";
@@ -58,8 +62,29 @@ public class PrimaryController {
         });
 
         moveButton.setOnAction(e -> {
-
+            moveTheFile();
         });
+        Tooltip tooltip = new Tooltip("Example: \"./../../home/\"");
+        moveButton.setTooltip(tooltip);
+    }
+
+    private void moveTheFile(){
+        TextInputDialog dialog = new TextInputDialog("");
+        dialog.setTitle("Enter the path");
+        dialog.setHeaderText("A path input dialog");
+        dialog.setContentText("Enter file's relative path");
+        Optional<String> result = dialog.showAndWait();
+        if (result.isEmpty()){
+            return;
+        }
+        if (!result.get().matches("^(./)(../)*([\\w&&[^0-9]][\\w]*/)+")){
+            //^(./)(../)*([a-zA-Z][a-zA-Z0-9А-Яа-я]*/)+
+            showAlert(false, "Incorrect path");
+            return;
+        }
+        RestTemplate restTemplate = new RestTemplate();
+        TransferData transferData = new TransferData(result.get(), null);
+        restTemplate.put(URL_SERVER + "move", transferData);
     }
 
     private void copyText(){

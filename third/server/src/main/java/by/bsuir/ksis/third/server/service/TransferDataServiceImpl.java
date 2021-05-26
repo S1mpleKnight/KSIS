@@ -15,6 +15,12 @@ import java.nio.file.Path;
 public class TransferDataServiceImpl implements TransferDataService {
 
     @Override
+    public void copy(String source, String destination) throws IOException {
+        byte[] readFile = read(source);
+        addToTheFilesEnd(destination, readFile);
+    }
+
+    @Override
     public void addToTheFilesEnd(String pathToFile, byte[] data) throws IOException {
         try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(pathToFile, true))){
             dos.write(data);

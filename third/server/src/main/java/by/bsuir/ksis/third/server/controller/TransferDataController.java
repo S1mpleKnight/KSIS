@@ -12,13 +12,14 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 @RestController
 public class TransferDataController {
-    private final static String NOT_MODIFIED = "Can not delete the file";
+    private final static String NOT_MODIFIED = "Can not modify the file";
     private final static String NOT_EXIST_RESPONSE = "The file does not exist";
     private final static String FILE_PATH = "file.txt";
     private final static String START_PATH = ".\\storage\\";
@@ -27,6 +28,22 @@ public class TransferDataController {
     @Autowired
     public TransferDataController(TransferDataService transferDataService) {
         this.transferDataService = transferDataService;
+    }
+
+    @PutMapping(value = "/move")
+    public void move(@RequestBody TransferData transferData){
+        if (!Files.exists(Path.of(START_PATH + FILE_PATH))){
+            return;
+        }
+        String receivedPath = transferData.getPathToFile();
+        if (!Files.exists(Path.of(new File(transferData.getPathToFile()).getAbsolutePath()))){
+            return;
+        }
+        try {
+            transferDataService.copy(START_PATH + FILE_PATH, receivedPath + FILE_PATH);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     @GetMapping

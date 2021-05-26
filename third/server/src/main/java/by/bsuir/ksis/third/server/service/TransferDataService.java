@@ -30,4 +30,10 @@ public interface TransferDataService {
      * @param pathToFile - путь к файлу, который нужно удалить
      */
     void delete(String pathToFile) throws IOException;
+
+    /**
+     * @param source - путь к файлу, который копируем
+     * @param destination - путь полученного в результате копирования файла
+     */
+    void copy(String source, String destination) throws IOException;
 }
