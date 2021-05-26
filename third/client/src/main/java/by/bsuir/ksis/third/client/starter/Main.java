@@ -15,13 +15,19 @@ import java.util.Objects;
 
 public class Main extends Application {
     private static final String SCENES_PATH = "primary.fxml";
+    private static Stage stage;
 
     public static void main(String[] args) {
         launch(args);
     }
 
+    public static Stage getStage() {
+        return stage;
+    }
+
     @Override
     public void start(Stage primaryStage) {
+        stage = primaryStage;
         try {
             Node node = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(SCENES_PATH)));
             Group group = new Group();

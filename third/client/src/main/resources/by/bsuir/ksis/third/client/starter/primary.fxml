@@ -9,7 +9,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
 <VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="by.bsuir.ksis.third.client.controller.PrimaryController">
    <children>
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: grey;">
@@ -22,9 +21,9 @@
          </children>
       </HBox>
       <Separator prefWidth="200.0" />
-      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="15.0">
+      <HBox alignment="CENTER" prefHeight="48.0" prefWidth="800.0" spacing="15.0">
          <children>
-            <Button fx:id="updateButton" mnemonicParsing="false" prefHeight="40.0" prefWidth="170.0" text="Обновить">
+            <Button fx:id="updateButton" mnemonicParsing="false" prefHeight="40.0" prefWidth="180.0" text="Обновить">
                <font>
                   <Font size="18.0" />
                </font>
@@ -34,17 +33,34 @@
                   <Font size="18.0" />
                </font>
             </Button>
-            <Button fx:id="deleteButton" mnemonicParsing="false" prefHeight="40.0" prefWidth="170.0" text="Удалить">
+            <Button fx:id="deleteButton" mnemonicParsing="false" prefHeight="40.0" prefWidth="180.0" text="Удалить">
                <font>
                   <Font size="18.0" />
                </font>
             </Button>
-            <Button fx:id="loadButton" mnemonicParsing="false" prefHeight="40.0" prefWidth="170.0" text="Загурзить">
+            <Button fx:id="loadButton" mnemonicParsing="false" prefHeight="40.0" prefWidth="180.0" text="Загрузить">
                <font>
                   <Font size="18.0" />
                </font>
             </Button>
          </children>
+      </HBox>
+      <HBox alignment="CENTER" prefHeight="50.0" prefWidth="800.0" spacing="15.0">
+         <children>
+            <Button fx:id="copyButton" mnemonicParsing="false" prefHeight="40.0" prefWidth="180.0" text="Копировать">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Button>
+            <Button fx:id="moveButton" mnemonicParsing="false" prefHeight="40.0" prefWidth="180.0" text="Переместить">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Button>
+         </children>
+         <VBox.margin>
+            <Insets />
+         </VBox.margin>
       </HBox>
       <Separator prefWidth="200.0" />
       <HBox alignment="CENTER" prefHeight="390.0" prefWidth="800.0">

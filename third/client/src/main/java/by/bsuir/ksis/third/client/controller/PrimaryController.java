@@ -1,12 +1,19 @@
 package by.bsuir.ksis.third.client.controller;
 
 import by.bsuir.ksis.third.client.model.TransferData;
+import by.bsuir.ksis.third.client.starter.Main;
+import by.bsuir.ksis.third.client.util.FileWorker;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import org.springframework.http.HttpEntity;
 import org.springframework.web.client.RestTemplate;
+
+import java.io.File;
+import java.io.IOException;
 
 public class PrimaryController {
     private static final String URL_SERVER = "http://localhost:8080/";
@@ -23,6 +30,10 @@ public class PrimaryController {
     private Button loadButton;
     @FXML
     private TextArea textArea;
+    @FXML
+    private Button copyButton;
+    @FXML
+    private Button moveButton;
 
     @FXML
     void initialize() {
@@ -41,6 +52,41 @@ public class PrimaryController {
         loadButton.setOnAction(e -> {
             takeText();
         });
+
+        copyButton.setOnAction(e -> {
+            copyText();
+        });
+
+        moveButton.setOnAction(e -> {
+
+        });
+    }
+
+    private void copyText(){
+        RestTemplate restTemplate = new RestTemplate();
+        String result = restTemplate.getForObject(URL_SERVER, String.class);
+        if (result == null || result.equals(NOT_EXIST_RESPONSE)){
+            showAlert(false, "Can not load file's content");
+            return;
+        }
+        File file = takeDirectory();
+        if (file == null){
+            showAlert(false, "Choose the directory");
+            return;
+        }
+        try {
+            FileWorker.writeTheFile(file.getAbsolutePath() + "\\file.txt", result.getBytes());
+        } catch (IOException e) {
+            showAlert(false, "Can not copy the file");
+        }
+    }
+
+    private File takeDirectory() {
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setTitle("Choose directory");
+        directoryChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+        File file = directoryChooser.showDialog(Main.getStage());
+        return file;
     }
 
     private void addText(){
