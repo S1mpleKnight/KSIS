@@ -14,11 +14,12 @@ repositories {
 }
 
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    implementation 'org.springframework.boot:spring-boot-starter-data-rest:2.1.5.RELEASE'
 }
 
 javafx {
     modules = ['javafx.controls', 'javafx.fxml']
     version = '11.0.2'
 }
+
+mainClassName = 'by.bsuir.ksis.third.client.starter.Main'

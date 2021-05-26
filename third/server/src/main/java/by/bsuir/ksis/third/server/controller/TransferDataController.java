@@ -13,9 +13,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 @RestController
 public class TransferDataController {
+    private final static String NOT_MODIFIED = "Can not delete the file";
+    private final static String NOT_EXIST_RESPONSE = "The file does not exist";
+    private final static String FILE_PATH = "file.txt";
     private final static String START_PATH = ".\\storage\\";
     private final TransferDataService transferDataService;
 
@@ -25,22 +30,29 @@ public class TransferDataController {
     }
 
     @GetMapping
-    public ResponseEntity<?> read(@RequestBody TransferData transferData) {
-        String serverPath = START_PATH + transferData.getPathToFile();
+    public ResponseEntity<?> read() {
+        String serverPath = START_PATH + FILE_PATH;
         byte[] data = null;
+        if (Files.exists(Path.of(serverPath))) {
+            data = takeData(serverPath, data);
+        } else {
+            data = NOT_EXIST_RESPONSE.getBytes();
+        }
+        return new ResponseEntity<>(data, HttpStatus.OK);
+    }
+
+    private byte[] takeData(String serverPath, byte[] data) {
         try {
             data = transferDataService.read(serverPath);
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
-        return data != null && data.length != 0
-                ? new ResponseEntity<>(data, HttpStatus.OK)
-                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return data;
     }
 
     @PostMapping
     public ResponseEntity<?> addToTheFilesEnd(@RequestBody TransferData transferData) {
-        String serverPath = START_PATH + transferData.getPathToFile();
+        String serverPath = START_PATH + FILE_PATH;
         boolean added = true;
         try {
             transferDataService.addToTheFilesEnd(serverPath, transferData.getData());
@@ -49,38 +61,45 @@ public class TransferDataController {
             System.out.println(e.getMessage());
         }
         return added
-                ? new ResponseEntity<>(HttpStatus.OK)
-                : new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+                ? new ResponseEntity<>("OK", HttpStatus.OK)
+                : new ResponseEntity<>(NOT_MODIFIED, HttpStatus.NOT_MODIFIED);
     }
 
     @PutMapping
     public ResponseEntity<?> update(@RequestBody TransferData transferData) {
-        String serverPath = START_PATH + transferData.getPathToFile();
+        String serverPath = START_PATH + FILE_PATH;
         boolean updated = true;
-        try {
-            transferDataService.update(serverPath, transferData.getData());
-        } catch (IOException e) {
-            updated = false;
-            System.out.println(e.getMessage());
+        if (Files.exists(Path.of(serverPath))){
+            try {
+                transferDataService.update(serverPath, transferData.getData());
+            } catch (IOException e) {
+                updated = false;
+                System.out.println(e.getMessage());
+            }
+        } else {
+            new ResponseEntity<>(NOT_EXIST_RESPONSE, HttpStatus.NOT_FOUND);
         }
         return updated
                 ? new ResponseEntity<>(HttpStatus.OK)
-                : new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+                : new ResponseEntity<>(NOT_MODIFIED, HttpStatus.NOT_MODIFIED);
     }
 
     @DeleteMapping
-    public ResponseEntity<?> delete(@RequestBody TransferData transferData) {
-        String serverPath = START_PATH + transferData.getPathToFile();
-        boolean deleted;
-        try {
-            transferDataService.delete(serverPath);
-            deleted = true;
-        } catch (IOException e) {
-            deleted = false;
-            System.out.println(e.getMessage());
+    public ResponseEntity<?> delete() {
+        String serverPath = START_PATH + FILE_PATH;
+        boolean deleted = false;
+        if (Files.exists(Path.of(serverPath))) {
+            try {
+                transferDataService.delete(serverPath);
+                deleted = true;
+            } catch (IOException e) {
+                deleted = false;
+            }
+        } else {
+            new ResponseEntity<>(NOT_EXIST_RESPONSE, HttpStatus.NOT_FOUND);
         }
         return deleted
                 ? new ResponseEntity<>(HttpStatus.OK)
-                : new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+                : new ResponseEntity<>(NOT_MODIFIED, HttpStatus.NOT_MODIFIED);
     }
 }
